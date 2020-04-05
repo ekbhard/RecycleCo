@@ -1,20 +1,12 @@
 package com.nemytow.recycleCo.RecycleCo.service;
 
-import com.nemytow.recycleCo.RecycleCo.repository.AccountRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.stereotype.Service;
+import com.nemytow.recycleCo.RecycleCo.domain.Account;
+import com.nemytow.recycleCo.RecycleCo.dto.RegistrationData;
 
-@Service
-public class UserService implements UserDetailsService {
+public interface UserService {
+     Account getCurrentAccount();
 
-    @Autowired
-    private AccountRepository accountRepository;
+     Long addNewAccount(RegistrationData user);
 
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return accountRepository.findByUsername(username);
-    }
+
 }

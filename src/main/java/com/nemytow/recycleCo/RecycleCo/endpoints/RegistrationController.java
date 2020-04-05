@@ -1,48 +1,46 @@
 package com.nemytow.recycleCo.RecycleCo.endpoints;
 
+import com.nemytow.recycleCo.RecycleCo.api.account.AccountApi;
 import com.nemytow.recycleCo.RecycleCo.domain.Account;
+import com.nemytow.recycleCo.RecycleCo.dto.OperationResponse;
+import com.nemytow.recycleCo.RecycleCo.dto.RegistrationData;
 import com.nemytow.recycleCo.RecycleCo.repository.AccountRepository;
 import com.nemytow.recycleCo.RecycleCo.service.Role;
+import com.nemytow.recycleCo.RecycleCo.service.SecurityService;
+import com.nemytow.recycleCo.RecycleCo.service.UserService;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.util.Collections;
 import java.util.Map;
 
-@Controller
+@RestController
 @Valid
-@Transactional
 public class RegistrationController {
     @Autowired
-    private AccountRepository userRepository;
+    UserService userService;
+    @Autowired
+    SecurityService securityService;
 
-    @GetMapping("/registration")
-    public String registration(){
-        return "registration";
-    }
+    @RequestMapping(value = "/registration", method = RequestMethod.POST, produces = {"application/json"})
+    public OperationResponse addNewUser(@RequestBody RegistrationData account, HttpServletRequest req) {
+        Long idCreated = userService.addNewAccount(account);
 
-    @PostMapping("/registration")
-    public String addUser(@RequestParam Account user, Map<String,Object> model){
-        if (user.getPassword().equals("") || user.getUsername().equals("")){
-            model.put("message","Null login and password");
-            return "registration";
+        OperationResponse resp = new OperationResponse();
+        if (idCreated != null){
+            resp.setOperationStatus(OperationResponse.ResponseStatusEnum.SUCCESS);
+            resp.setOperationMessage("User Added");
         }
-
-        Account userFromDb = userRepository.findByUsername(user.getUsername());
-
-        if (userFromDb != null){
-            model.put("message","User founded");
-            return "registration";
+        else{
+            resp.setOperationStatus(OperationResponse.ResponseStatusEnum.ERROR);
+            resp.setOperationMessage("Unable to add user");
         }
-        user.setActive(true);
-        user.setRoles(Collections.singleton(Role.USER));
-//        userRepository.save(user);
-        return "redirect:/settings";
+        return resp;
     }
 }
