@@ -5,7 +5,7 @@ import lombok.*;
 import java.util.Set;
 
 @Value
-public class RegistrationData {
+public class RegistrationInput {
 
   @NonNull
   String username ;
