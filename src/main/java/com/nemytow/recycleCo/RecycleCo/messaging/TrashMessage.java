@@ -7,13 +7,13 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Setter
 @Getter
+@ToString
 public class TrashMessage implements Serializable {
 
     Long trashId;
 
-    String type;
+    Long typeId;
 
     boolean right;
 

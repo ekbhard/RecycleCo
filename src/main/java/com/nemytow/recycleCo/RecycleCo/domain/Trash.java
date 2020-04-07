@@ -1,5 +1,6 @@
 package com.nemytow.recycleCo.RecycleCo.domain;
 
+import com.nemytow.recycleCo.RecycleCo.messaging.TrashMessage;
 import lombok.*;
 
 import javax.persistence.*;
@@ -23,9 +24,19 @@ public class Trash {
     boolean checked;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "trash_type_id")
     private TrashType type;
 
     @NonNull
     Long binId;
+
+    public static Trash from (TrashMessage message,User user,TrashType trashType){
+        return Trash.builder()
+                .user(user)
+                .binId(1L)
+                .checked(message.isRight())
+                .type(trashType)
+                .build();
+
+    }
 }
