@@ -14,7 +14,7 @@ public class RabbitMqListener {
     MessagingApi api;
 
     @RabbitListener(queues="${rabbitmq.queueName}")
-    public void listen(byte[] message) {
+    public OperationResponse listen(byte[] message) {
         String msg = new String(message);
         TrashMessage not = new Gson().fromJson(msg, TrashMessage.class);
         System.out.println("Received a new message..." + not.toString());
@@ -28,5 +28,6 @@ public class RabbitMqListener {
             resp.setOperationStatus(OperationResponse.ResponseStatusEnum.ERROR);
             resp.setOperationMessage("Unable to add trash");
         }
+        return resp;
     }
 }

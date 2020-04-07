@@ -42,14 +42,8 @@ public class MessagingApiImpl implements MessagingApi {
     TrashTypeRepository trashTypeRepository;
 
     @Override
-    public void sendMessage(){
-        producer.sendMessage(TrashMessage.builder()
-                .beanId(1L)
-                .trashId(1L)
-                .typeId(1L)
-                .userId(accountApi.getCurrentUser().getId())
-                .right(true)
-                .build());
+    public void sendMessage(TrashMessage message){
+        producer.sendMessage(message);
     }
 
     @Override

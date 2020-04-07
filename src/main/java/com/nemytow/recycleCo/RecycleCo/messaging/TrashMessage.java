@@ -4,14 +4,19 @@ import lombok.*;
 
 import java.io.Serializable;
 
-@AllArgsConstructor
-@NoArgsConstructor
+//@AllArgsConstructor
+//@NoArgsConstructor
+//@Builder
+//@Getter
+//@ToString
+
+@Value
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED, force = true)
 @Getter
 @ToString
 public class TrashMessage implements Serializable {
-
-    Long trashId;
 
     Long typeId;
 

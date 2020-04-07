@@ -18,7 +18,7 @@ public class Trash {
     private Long id;
 
     @OneToOne(cascade = CascadeType.REMOVE)
-    @JoinColumn(name = "id_user",unique = true)
+    @JoinColumn(name = "id_user")
     private User user;
 
     boolean checked;

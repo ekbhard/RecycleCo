@@ -3,12 +3,16 @@ package com.nemytow.recycleCo.RecycleCo.endpoints;
 
 import com.nemytow.recycleCo.RecycleCo.api.messaging.MessagingApi;
 import com.nemytow.recycleCo.RecycleCo.dto.ProfileData;
+import com.nemytow.recycleCo.RecycleCo.dto.RegistrationInput;
+import com.nemytow.recycleCo.RecycleCo.messaging.TrashMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 @RestController
@@ -20,9 +24,9 @@ public class TrashController {
     MessagingApi messagingApi;
 
     @PreAuthorize("hasAuthority('USER, ADMIN')")
-    @RequestMapping(value = "/send", method = RequestMethod.GET, produces = {"application/json"})
-    public void sendMessage() {
-        messagingApi.sendMessage();
+    @RequestMapping(value = "/send", method = RequestMethod.POST, produces = {"application/json"})
+    public void sendMessage(@RequestBody TrashMessage message, HttpServletRequest req) {
+        messagingApi.sendMessage(message);
     }
 
 }
