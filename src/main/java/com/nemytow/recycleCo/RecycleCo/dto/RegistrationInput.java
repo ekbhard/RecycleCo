@@ -1,8 +1,7 @@
 package com.nemytow.recycleCo.RecycleCo.dto;
 
-import lombok.*;
-
-import java.util.Set;
+import lombok.NonNull;
+import lombok.Value;
 
 @Value
 public class RegistrationInput {

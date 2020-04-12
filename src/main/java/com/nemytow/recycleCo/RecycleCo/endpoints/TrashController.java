@@ -16,17 +16,22 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/trash")
 @Valid
 public class TrashController {
 
     @Autowired
     MessagingApi messagingApi;
 
-    @PreAuthorize("hasAuthority('USER, ADMIN')")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     @RequestMapping(value = "/send", method = RequestMethod.POST, produces = {"application/json"})
     public void sendMessage(@RequestBody TrashMessage message, HttpServletRequest req) {
         messagingApi.sendMessage(message);
+    }
+
+    @RequestMapping(value = "/get", method = RequestMethod.POST, produces = {"application/json"})
+    protected void getUserTrash(){
+
     }
 
 }

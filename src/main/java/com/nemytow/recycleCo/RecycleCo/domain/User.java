@@ -1,14 +1,21 @@
 package com.nemytow.recycleCo.RecycleCo.domain;
 
-import com.nemytow.recycleCo.RecycleCo.service.Role;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import java.time.Instant;
 import java.util.Set;
 
-@Entity(name = "usr")
+@Entity
 @AllArgsConstructor
+@Table(name = "users",
+        uniqueConstraints = {
+        @UniqueConstraint(columnNames = "username"),
+        @UniqueConstraint(columnNames = "email")
+})
 @Getter
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -24,10 +31,16 @@ public class User {
     @Column(nullable = false)
     private String password;
 
+    @NotBlank
+    @Size(max = 50)
+    @Email
+    private String email;
+
     @Setter
     @OneToOne(cascade = CascadeType.PERSIST, mappedBy = "user")
     private Profile profile;
 
+    @Setter
     @ElementCollection(targetClass = Role.class , fetch = FetchType.EAGER)
     @CollectionTable(name = "user_role" , joinColumns = @JoinColumn(name = "user_id"))
     @Enumerated(EnumType.STRING)
@@ -45,6 +58,12 @@ public class User {
     @Builder.Default
     @Column(updatable = false)
     Instant created = Instant.now();
+
+    public User(String username, String email, String password) {
+        this.username = username;
+        this.email = email;
+        this.password = password;
+    }
 
     private void block(){ this.notBlocked = false;}
 

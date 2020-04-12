@@ -1,6 +1,5 @@
 package com.nemytow.recycleCo.RecycleCo.api.messaging;
 
-import com.nemytow.recycleCo.RecycleCo.api.account.AccountApi;
 import com.nemytow.recycleCo.RecycleCo.domain.Trash;
 import com.nemytow.recycleCo.RecycleCo.domain.TrashType;
 import com.nemytow.recycleCo.RecycleCo.domain.User;
@@ -28,9 +27,6 @@ public class MessagingApiImpl implements MessagingApi {
 
     @Autowired
     AMQPProducer producer;
-
-    @Autowired
-    AccountApi accountApi;
 
     @Autowired
     TrashRepository trashRepository;

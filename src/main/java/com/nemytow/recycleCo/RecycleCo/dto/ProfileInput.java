@@ -1,12 +1,11 @@
 package com.nemytow.recycleCo.RecycleCo.dto;
 
 
-import lombok.NonNull;
-import lombok.Value;
-
-import javax.validation.constraints.Pattern;
+import lombok.*;
 
 @Value
+@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED, force = true)
 public class ProfileInput {
 
     @NonNull

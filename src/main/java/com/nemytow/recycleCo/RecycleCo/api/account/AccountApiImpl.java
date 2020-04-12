@@ -1,9 +1,7 @@
 package com.nemytow.recycleCo.RecycleCo.api.account;
 
 import com.nemytow.recycleCo.RecycleCo.domain.User;
-import com.nemytow.recycleCo.RecycleCo.dto.RegistrationInput;
 import com.nemytow.recycleCo.RecycleCo.repository.UserRepository;
-import com.nemytow.recycleCo.RecycleCo.service.Role;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -12,12 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import javax.transaction.Transactional;
-import java.util.HashSet;
-import java.util.Set;
 
 
 @Component
@@ -30,21 +25,6 @@ public class AccountApiImpl implements AccountApi {
     @Autowired
     UserRepository userRepository;
 
-    @Override
-    public Long addNewUser(RegistrationInput account) {
-        Set<Role> roles = new HashSet<>();
-        roles.add(Role.USER);
-        User newUser = User.builder()
-                .password(new BCryptPasswordEncoder().encode(account.getPassword()))
-                .username(account.getUsername())
-                .active(true)
-                .notBlocked(true)
-                .roles(roles)
-                .build();
-        userRepository.save(newUser);
-        return newUser.getId();
-    }
-
     private String getName() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (!(authentication instanceof AnonymousAuthenticationToken)) {
@@ -55,6 +35,6 @@ public class AccountApiImpl implements AccountApi {
 
     @Override
     public User getCurrentUser(){
-        return userRepository.findByUsername(getName());
+        return userRepository.findByUsername(getName()).orElse(null);
     }
 }

@@ -1,12 +1,7 @@
 package com.nemytow.recycleCo.RecycleCo.dto;
 
 import com.nemytow.recycleCo.RecycleCo.domain.Profile;
-import com.nemytow.recycleCo.RecycleCo.domain.User;
 import lombok.*;
-
-import javax.persistence.CascadeType;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
 
 @Value
 @Builder

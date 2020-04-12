@@ -3,24 +3,17 @@ package com.nemytow.recycleCo.RecycleCo.api.profile;
 
 import com.nemytow.recycleCo.RecycleCo.api.account.AccountApi;
 import com.nemytow.recycleCo.RecycleCo.domain.Profile;
-import com.nemytow.recycleCo.RecycleCo.domain.User;
-import com.nemytow.recycleCo.RecycleCo.dto.OperationResponse;
 import com.nemytow.recycleCo.RecycleCo.dto.ProfileData;
 import com.nemytow.recycleCo.RecycleCo.dto.ProfileInput;
-import com.nemytow.recycleCo.RecycleCo.dto.RegistrationInput;
 import com.nemytow.recycleCo.RecycleCo.repository.ProfileRepository;
-import com.nemytow.recycleCo.RecycleCo.service.Role;
-import com.nemytow.recycleCo.RecycleCo.service.UserPrincipalDetailsServiceImpl;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import javax.transaction.Transactional;
-import java.util.HashSet;
-import java.util.Set;
 
 @Component
 @Log4j2
