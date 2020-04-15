@@ -13,12 +13,16 @@ import java.io.Serializable;
 @ToString
 public class TrashMessage implements Serializable {
 
+    @NonNull
     Long typeId;
 
+    @NonNull
     boolean right;
 
+    @NonNull
     Long userId;
 
+    @NonNull
     Long beanId;
 }
 
