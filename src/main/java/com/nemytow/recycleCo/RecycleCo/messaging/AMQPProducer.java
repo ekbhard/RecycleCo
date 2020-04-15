@@ -13,7 +13,7 @@ public class AMQPProducer {
     @Autowired
     RabbitMQProperties rabbitMQProperties;
 
-    public void sendMessage(TrashMessage msg){
+    public void sendMessage(PythonMessage msg){
         System.out.println("Send msg = " + msg.toString());
         rabbitTemplate.convertAndSend(rabbitMQProperties.getExchangeName(), rabbitMQProperties.getRoutingKey(), msg);
     }

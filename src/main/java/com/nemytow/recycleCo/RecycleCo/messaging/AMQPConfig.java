@@ -47,7 +47,7 @@ public class AMQPConfig {
                                              MessageListenerAdapter listenerAdapter) {
         SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
         container.setConnectionFactory(connectionFactory);
-        container.setQueueNames(rabbitMQProperties.getQueueName());
+        container.setQueueNames("python_queue");
         container.setMessageListener(listenerAdapter);
         return container;
     }

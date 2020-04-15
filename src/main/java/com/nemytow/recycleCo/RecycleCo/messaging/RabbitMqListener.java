@@ -13,7 +13,7 @@ public class RabbitMqListener {
     @Autowired
     MessagingApi api;
 
-    @RabbitListener(queues="${rabbitmq.queueName}")
+    @RabbitListener(queues="${rabbitmq.pythonQueue}")
     public void listen(byte[] message) {
         String msg = new String(message);
         TrashMessage not = new Gson().fromJson(msg, TrashMessage.class);

@@ -14,7 +14,8 @@ public class MessagingConfiguration {
     public CachingConnectionFactory rabbitConnectionFactory(RabbitProperties config) throws Exception {
 
         CachingConnectionFactory connectionFactory = new CachingConnectionFactory();
-        connectionFactory.getRabbitConnectionFactory().setUri("amqp://hinsveto:LghUdm-3gLMz5nrL3AdtclpgV54Gdwn9@kangaroo.rmq.cloudamqp.com/hinsveto");
+        connectionFactory.getRabbitConnectionFactory()
+                .setUri("amqp://hinsveto:LghUdm-3gLMz5nrL3AdtclpgV54Gdwn9@kangaroo.rmq.cloudamqp.com/hinsveto");
 
         return connectionFactory;
 

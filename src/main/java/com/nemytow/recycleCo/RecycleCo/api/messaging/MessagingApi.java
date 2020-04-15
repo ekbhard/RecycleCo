@@ -4,7 +4,7 @@ import com.nemytow.recycleCo.RecycleCo.messaging.TrashMessage;
 
 public interface MessagingApi {
 
-    void sendMessage(TrashMessage message);
+    void sendMessage(Long beanId);
 
     Long saveTrashFromTheQueue(TrashMessage message);
 }

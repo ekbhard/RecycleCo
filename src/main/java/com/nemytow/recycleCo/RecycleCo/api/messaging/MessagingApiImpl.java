@@ -1,9 +1,11 @@
 package com.nemytow.recycleCo.RecycleCo.api.messaging;
 
+import com.nemytow.recycleCo.RecycleCo.api.account.AccountApi;
 import com.nemytow.recycleCo.RecycleCo.domain.Trash;
 import com.nemytow.recycleCo.RecycleCo.domain.TrashType;
 import com.nemytow.recycleCo.RecycleCo.domain.User;
 import com.nemytow.recycleCo.RecycleCo.messaging.AMQPProducer;
+import com.nemytow.recycleCo.RecycleCo.messaging.PythonMessage;
 import com.nemytow.recycleCo.RecycleCo.messaging.TrashMessage;
 import com.nemytow.recycleCo.RecycleCo.repository.TrashRepository;
 import com.nemytow.recycleCo.RecycleCo.repository.TrashTypeRepository;
@@ -35,10 +37,17 @@ public class MessagingApiImpl implements MessagingApi {
     UserRepository userRepository;
 
     @Autowired
+    AccountApi accountApi;
+
+    @Autowired
     TrashTypeRepository trashTypeRepository;
 
-    @Override
-    public void sendMessage(TrashMessage message){
+    public void sendMessage(Long beanId){
+        User currentUser = accountApi.getCurrentUser();
+        PythonMessage message = PythonMessage.builder()
+                .beanId(beanId)
+                .userId(currentUser.getId())
+                .build();
         producer.sendMessage(message);
     }
 

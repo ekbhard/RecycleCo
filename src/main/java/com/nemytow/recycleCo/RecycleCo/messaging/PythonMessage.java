@@ -4,22 +4,17 @@ import lombok.*;
 
 import java.io.Serializable;
 
-
 @Value
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED, force = true)
 @Getter
 @ToString
-public class TrashMessage implements Serializable {
+public class PythonMessage implements Serializable {
 
-    Long typeId;
-
-    boolean right;
-
+    @NonNull
     Long userId;
 
+    @NonNull
     Long beanId;
 }
-
-
