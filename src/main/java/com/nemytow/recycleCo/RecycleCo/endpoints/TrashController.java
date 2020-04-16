@@ -2,16 +2,17 @@ package com.nemytow.recycleCo.RecycleCo.endpoints;
 
 
 import com.nemytow.recycleCo.RecycleCo.api.messaging.MessagingApi;
-import com.nemytow.recycleCo.RecycleCo.dto.ProfileData;
-import com.nemytow.recycleCo.RecycleCo.dto.RegistrationInput;
-import com.nemytow.recycleCo.RecycleCo.messaging.PythonMessage;
-import com.nemytow.recycleCo.RecycleCo.messaging.TrashMessage;
+import com.nemytow.recycleCo.RecycleCo.api.trash.TrashApi;
+import com.nemytow.recycleCo.RecycleCo.dto.TrashData;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/trash")
@@ -21,14 +22,17 @@ public class TrashController {
     @Autowired
     MessagingApi messagingApi;
 
+    @Autowired
+    TrashApi trashApi;
+
     @RequestMapping(value = "/send", method = RequestMethod.GET, produces = {"application/json"})
     public void sendMessage(@RequestParam Long beanId, HttpServletRequest req) {
         messagingApi.sendMessage(beanId);
     }
 
-    @RequestMapping(value = "/get", method = RequestMethod.POST, produces = {"application/json"})
-    protected void getUserTrash(){
-
+    @RequestMapping(value = "/get", method = RequestMethod.GET, produces = {"application/json"})
+    protected List<TrashData> getUserTrash(){
+        return trashApi.getTrashByUser();
     }
 
 }

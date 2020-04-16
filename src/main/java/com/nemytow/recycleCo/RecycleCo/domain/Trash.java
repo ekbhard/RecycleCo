@@ -17,8 +17,8 @@ public class Trash {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @OneToOne(cascade = CascadeType.REMOVE)
-    @JoinColumn(name = "id_user")
+    @ManyToOne(cascade = CascadeType.REMOVE)
+    @JoinColumn(name = "user")
     private User user;
 
     boolean checked;
