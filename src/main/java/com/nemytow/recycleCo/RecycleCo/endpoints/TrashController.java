@@ -1,6 +1,4 @@
 package com.nemytow.recycleCo.RecycleCo.endpoints;
-
-
 import com.nemytow.recycleCo.RecycleCo.api.messaging.MessagingApi;
 import com.nemytow.recycleCo.RecycleCo.api.trash.UserTrashApi;
 import com.nemytow.recycleCo.RecycleCo.dto.TrashData;
@@ -20,10 +18,16 @@ import java.util.List;
 public class TrashController {
 
     @Autowired
-    MessagingApi messagingApi;
+    private final MessagingApi messagingApi;
 
     @Autowired
-    UserTrashApi userTrashApi;
+    private final UserTrashApi userTrashApi;
+
+    public TrashController(MessagingApi messagingApi, UserTrashApi userTrashApi) {
+        this.messagingApi = messagingApi;
+        this.userTrashApi = userTrashApi;
+    }
+
 
     @RequestMapping(value = "/send", method = RequestMethod.GET, produces = {"application/json"})
     public void sendMessage(@RequestParam Long beanId, HttpServletRequest req) {
