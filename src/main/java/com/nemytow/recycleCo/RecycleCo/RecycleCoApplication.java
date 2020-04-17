@@ -3,7 +3,7 @@ package com.nemytow.recycleCo.RecycleCo;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages={"com.*"})
 public class RecycleCoApplication {
 
 	public static void main(String[] args) {
