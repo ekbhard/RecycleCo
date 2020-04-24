@@ -21,8 +21,6 @@ public class Trash {
     @JoinColumn(name = "id_user")
     private User user;
 
-    boolean checked;
-
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "trash_type_id")
     private TrashType type;
@@ -30,11 +28,10 @@ public class Trash {
     @NonNull
     Long binId;
 
-    public static Trash from (TrashMessage message,User user,TrashType trashType){
+    public static Trash from (User user,TrashType trashType){
         return Trash.builder()
                 .user(user)
                 .binId(1L)
-                .checked(message.isRight())
                 .type(trashType)
                 .build();
 

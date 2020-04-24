@@ -24,7 +24,6 @@ public class TrashData {
         return TrashData.builder()
                 .type(trash.getType().getType())
                 .binId(trash.getBinId())
-                .checked(trash.isChecked())
                 .build();
     }
 

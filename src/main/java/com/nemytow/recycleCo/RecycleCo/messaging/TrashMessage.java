@@ -17,9 +17,6 @@ public class TrashMessage implements Serializable {
     Long typeId;
 
     @NonNull
-    boolean right;
-
-    @NonNull
     Long userId;
 
     @NonNull
