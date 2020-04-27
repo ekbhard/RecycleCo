@@ -19,7 +19,6 @@ public class TrashData {
     @NonNull
     boolean checked;
 
-
     public static TrashData of(Trash trash) {
         return TrashData.builder()
                 .type(trash.getType().getType())

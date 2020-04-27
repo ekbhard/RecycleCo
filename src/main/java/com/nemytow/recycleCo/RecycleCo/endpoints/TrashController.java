@@ -2,6 +2,7 @@ package com.nemytow.recycleCo.RecycleCo.endpoints;
 import com.nemytow.recycleCo.RecycleCo.api.messaging.MessagingApi;
 import com.nemytow.recycleCo.RecycleCo.api.trash.UserTrashApi;
 import com.nemytow.recycleCo.RecycleCo.dto.TrashData;
+import com.nemytow.recycleCo.RecycleCo.dto.TrashStatistics;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -39,4 +40,8 @@ public class TrashController {
         return userTrashApi.getTrashByUser();
     }
 
+    @RequestMapping(value = "/statistics", method = RequestMethod.GET, produces = {"application/json"})
+    protected TrashStatistics getStatistics(){
+        return userTrashApi.getTrashStatistic();
+    }
 }
