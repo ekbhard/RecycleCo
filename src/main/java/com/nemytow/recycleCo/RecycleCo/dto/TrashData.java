@@ -17,12 +17,13 @@ public class TrashData {
     Long binId;
 
     @NonNull
-    boolean checked;
+    boolean resolved;
 
     public static TrashData of(Trash trash) {
         return TrashData.builder()
                 .type(trash.getType().getType())
                 .binId(trash.getBinId())
+                .resolved(trash.isResolved())
                 .build();
     }
 
