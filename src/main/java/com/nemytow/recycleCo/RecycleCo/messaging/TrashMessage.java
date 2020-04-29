@@ -21,6 +21,8 @@ public class TrashMessage implements Serializable {
 
     @NonNull
     Long beanId;
+
+    String uri;
 }
 
 

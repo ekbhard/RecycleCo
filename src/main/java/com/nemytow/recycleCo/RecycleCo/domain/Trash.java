@@ -1,6 +1,8 @@
 package com.nemytow.recycleCo.RecycleCo.domain;
 
+import com.nemytow.recycleCo.RecycleCo.messaging.TrashMessage;
 import lombok.*;
+import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
 
@@ -27,13 +29,17 @@ public class Trash {
     @Setter
     boolean resolved = false;
 
+    @Nullable
+    String uri;
+
     @NonNull
     Long binId;
 
-    public static Trash from (User user,TrashType trashType){
+    public static Trash from (User user, TrashType trashType, TrashMessage message){
         return Trash.builder()
+                .uri(message.getUri())
                 .user(user)
-                .binId(1L)
+                .binId(message.getBeanId())
                 .type(trashType)
                 .build();
 

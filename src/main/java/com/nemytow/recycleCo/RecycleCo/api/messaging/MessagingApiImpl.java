@@ -57,7 +57,7 @@ public class MessagingApiImpl implements MessagingApi {
         Optional<TrashType> type = trashTypeRepository.findById(message.getTypeId());
         if (!type.isPresent()) return null;
         if (!userFromMessage.isPresent()) return null;
-        Trash trashFromMessage = Trash.from(userFromMessage.get(),type.get());
+        Trash trashFromMessage = Trash.from(userFromMessage.get(),type.get(),message);
         trashRepository.save(trashFromMessage);
         return trashFromMessage.getId();
     }

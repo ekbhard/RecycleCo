@@ -19,8 +19,11 @@ public class TrashData {
     @NonNull
     boolean resolved;
 
+    String uri;
+
     public static TrashData of(Trash trash) {
         return TrashData.builder()
+                .uri(trash.getUri())
                 .type(trash.getType().getType())
                 .binId(trash.getBinId())
                 .resolved(trash.isResolved())
