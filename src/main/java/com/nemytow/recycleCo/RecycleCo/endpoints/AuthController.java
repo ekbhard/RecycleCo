@@ -2,6 +2,8 @@ package com.nemytow.recycleCo.RecycleCo.endpoints;
 
 import com.nemytow.recycleCo.RecycleCo.domain.Role;
 import com.nemytow.recycleCo.RecycleCo.domain.User;
+import com.nemytow.recycleCo.RecycleCo.domain.VerificationToken;
+import com.nemytow.recycleCo.RecycleCo.dto.OnRegistrationCompleteEvent;
 import com.nemytow.recycleCo.RecycleCo.payload.request.LoginRequest;
 import com.nemytow.recycleCo.RecycleCo.payload.request.SignupRequest;
 import com.nemytow.recycleCo.RecycleCo.payload.response.JwtResponse;
@@ -9,7 +11,11 @@ import com.nemytow.recycleCo.RecycleCo.payload.response.MessageResponse;
 import com.nemytow.recycleCo.RecycleCo.repository.UserRepository;
 import com.nemytow.recycleCo.RecycleCo.security.jwt.JwtUtils;
 import com.nemytow.recycleCo.RecycleCo.security.services.UserDetailsImpl;
+import com.nemytow.recycleCo.RecycleCo.service.CustomException;
+import com.nemytow.recycleCo.RecycleCo.service.email.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -17,92 +23,120 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/auth")
+@Transactional
 public class AuthController {
-	@Autowired
+
+    @Autowired
+    private TokenService service;
+
+    @Value("${app.url.current}")
+    private String url;
+
+    @Autowired
     AuthenticationManager authenticationManager;
 
-	@Autowired
-	UserRepository userRepository;
+    @Autowired
+    UserRepository userRepository;
 
+    @Autowired
+    ApplicationEventPublisher eventPublisher;
 
-	@Autowired
+    @Autowired
     PasswordEncoder encoder;
 
-	@Autowired
-	JwtUtils jwtUtils;
+    @Autowired
+    JwtUtils jwtUtils;
 
-	@PostMapping("/signin")
-	public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
+    @PostMapping("/signin")
+    public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) throws CustomException {
 
-		Authentication authentication = authenticationManager.authenticate(
-				new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
 
-		SecurityContextHolder.getContext().setAuthentication(authentication);
-		String jwt = jwtUtils.generateJwtToken(authentication);
-		
-		UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-		List<String> roles = userDetails.getAuthorities().stream()
-				.map(GrantedAuthority::getAuthority)
-				.collect(Collectors.toList());
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        String jwt = jwtUtils.generateJwtToken(authentication);
 
-		return ResponseEntity.ok(new JwtResponse(jwt,
-												 userDetails.getId(), 
-												 userDetails.getUsername(), 
-												 userDetails.getEmail(), 
-												 roles));
-	}
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 
-	@PostMapping("/signup")
-	public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
-		if (userRepository.existsByUsername(signUpRequest.getUsername())) {
-			return ResponseEntity
-					.badRequest()
-					.body(new MessageResponse("Error: Username is already taken!"));
-		}
+        List<String> roles = userDetails.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.toList());
 
-		if (userRepository.existsByEmail(signUpRequest.getEmail())) {
-			return ResponseEntity
-					.badRequest()
-					.body(new MessageResponse("Error: Email is already in use!"));
-		}
+        return ResponseEntity.ok(new JwtResponse(jwt,
+                userDetails.getId(),
+                userDetails.getUsername(),
+                userDetails.getEmail(),
+                roles));
+    }
 
-		// Create new user's account
-		User user = new User(signUpRequest.getUsername(),
-							 signUpRequest.getEmail(),
-							 encoder.encode(signUpRequest.getPassword()));
+    @PostMapping("/signup")
+    public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest, HttpServletRequest request) {
+        if (userRepository.existsByUsername(signUpRequest.getUsername())) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Error: Username is already taken!"));
+        }
 
-		Set<String> strRoles = signUpRequest.getRole();
-		Set<Role> roles = new HashSet<>();
+        if (userRepository.existsByEmail(signUpRequest.getEmail())) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Error: Email is already in use!"));
+        }
 
-		if (strRoles == null) {
-			Role userRole = Role.ROLE_USER;
-			roles.add(userRole);
-		} else {
-			strRoles.forEach(role -> {
-				if ("admin".equals(role)) {
-					Role adminRole = Role.ROLE_ADMIN;
-					roles.add(adminRole);
-				} else {
-					Role userRole = Role.ROLE_USER;
-					roles.add(userRole);
-				}
-			});
-		}
+        // Create new user's account
+        User user = new User(signUpRequest.getUsername(),
+                signUpRequest.getEmail(),
+                encoder.encode(signUpRequest.getPassword()));
 
-		user.setRoles(roles);
-		userRepository.save(user);
+        Set<String> strRoles = signUpRequest.getRole();
+        Set<Role> roles = new HashSet<>();
 
-		return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
-	}
+        if (strRoles == null) {
+            Role userRole = Role.ROLE_USER;
+            roles.add(userRole);
+        } else {
+            strRoles.forEach(role -> {
+                if ("admin".equals(role)) {
+                    Role adminRole = Role.ROLE_ADMIN;
+                    roles.add(adminRole);
+                } else {
+                    Role userRole = Role.ROLE_USER;
+                    roles.add(userRole);
+                }
+            });
+        }
+
+        user.setRoles(roles);
+        userRepository.save(user);
+
+        String appUrl = url;
+
+        eventPublisher.publishEvent(new OnRegistrationCompleteEvent(user,
+                request.getLocale(), appUrl));
+        return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
+    }
+
+    @GetMapping("/regitrationConfirm")
+    public ResponseEntity<?> confirmRegistration(@RequestParam("token") String token) {
+
+        VerificationToken verificationToken = service.getVerificationToken(token);
+        if (verificationToken == null) {
+            return ResponseEntity.badRequest().body("Your token is null");
+        }
+        User user = verificationToken.getUser();
+        user.setEnabled();
+        userRepository.save(user);
+        return ResponseEntity.ok().body("User " + user.getId() + " vas enabled!");
+    }
 }

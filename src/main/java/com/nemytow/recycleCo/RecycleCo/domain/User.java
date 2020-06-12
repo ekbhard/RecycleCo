@@ -36,18 +36,21 @@ public class User {
     @Email
     private String email;
 
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private VerificationToken verificationToken;
+
     @Setter
     @OneToOne(cascade = CascadeType.PERSIST, mappedBy = "user")
     private Profile profile;
 
     @Setter
-    @ElementCollection(targetClass = Role.class , fetch = FetchType.EAGER)
-    @CollectionTable(name = "user_role" , joinColumns = @JoinColumn(name = "user_id"))
+    @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
+    @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"))
     @Enumerated(EnumType.STRING)
     Set<Role> roles;
 
-    @Builder.Default
-    boolean notBlocked = true;
+    @Column(name = "enabled")
+    boolean enabled;
 
     @OneToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "id_profile", unique = true)
@@ -63,8 +66,11 @@ public class User {
         this.username = username;
         this.email = email;
         this.password = password;
+        this.enabled = false;
     }
 
-    private void block(){ this.notBlocked = false;}
+    public void setEnabled(){
+        this.enabled = true;
+    }
 
 }
