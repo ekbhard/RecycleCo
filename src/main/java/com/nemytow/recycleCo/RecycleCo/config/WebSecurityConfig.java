@@ -1,4 +1,4 @@
-package com.nemytow.recycleCo.RecycleCo.security;
+package com.nemytow.recycleCo.RecycleCo.config;
 
 import com.nemytow.recycleCo.RecycleCo.security.jwt.AuthEntryPointJwt;
 import com.nemytow.recycleCo.RecycleCo.security.jwt.AuthTokenFilter;
